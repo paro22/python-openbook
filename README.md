@@ -13,10 +13,18 @@ This little python script does just that. Put in a URL to parse, define a CSS cl
 python openbook/main.py -u http://openbook.galileocomputing.de/java7/ -c .main
 ```
 
-### Disclaimer
+-h, --help  | show this help message and exit
+-u          | URL with table of contents to parse (required)
+-c          | CSS Class or ID to parse, eg. main-content (required)
+-t          | Tag name in Readability. Defaults to <title> of site given in option -u if empty.
 
-Please note that this is my first ever python program, so there's probably a lot of room for improvement. Let me know if you find anything obvious. :)
+## Disclaimer
 
-### To Do's
+Please note that this is my first ever Python program, so there is probably some room for improvement. Let me know if you find anything obvious! :)
+
+## To Do's
 
 * instead of using Readability for parsing and storing, write own (simple) parser
+* write some tests
+* make it oop
+* check if best practices are used

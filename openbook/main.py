@@ -1,3 +1,4 @@
+#!/usr/bin/python
 
 """
 MAIN
@@ -11,6 +12,8 @@ from pprint import pprint
 from settings import \
        CONSUMER_KEY, CONSUMER_SECRET, USERNAME, PASSWORD
 from urlparse import urlsplit
+import optparse
+from termcolor import colored
 
 
 def get_token():
@@ -22,25 +25,46 @@ def get_token():
     return token
 
 
-def get_toc(url):
+def get_soup(url):
     """
-    Get 'table of contents page' and retrieve list of pages to send to Readability
+    Retrieve HTML soup from given URL
     """
 
     r = requests.get(url)
     data = r.text
     soup = BeautifulSoup(data)
+    return soup
+
+
+def get_links(soup, url, cssClass):
+    """
+    Get 'table of contents page' and retrieve list of pages to send to Readability
+    """
+
     url_list = []
+    divs = soup.find_all(class_=cssClass, limit=1)
+    for div in divs:
+        for link in div.find_all('a'):
+            href = str(link.get('href'))
 
-    # find all links:
-    for link in soup.find_all('a'):
-        href = str(link.get('href'))
+            if href != '' and href[0] != '#' and 'None' not in href and 'mailto:' not in href:
+                href = sanitize_url(link.get('href'), url)
+                url_list.append(href)
 
-        if href != '' and href[0] != '#' and 'None' not in href and 'mailto:' not in href:
-            href = sanitize_url(link.get('href'), url)
-            url_list.append(href)
-
+    print 'Found', len(url_list), 'links in container', cssClass
     return remove_duplicate_urls(url_list)
+
+
+def get_tag_name(soup, name):
+    """
+    If a name was specified in the command line options, use it as the tag name
+    for Readability. Otherwise, default back to the html <title> of the defined page
+    """
+
+    if name == "":
+        return str(soup.head.title.contents[0])
+    else:
+        return name
 
 
 def remove_duplicate_urls(seq, idfun=None): 
@@ -59,6 +83,8 @@ def remove_duplicate_urls(seq, idfun=None):
         if marker in seen: continue
         seen[marker] = 1
         result.append(item)
+
+    print 'Removing duplicates, the list was reduced to', len(result), 'links.'
     return result
 
 
@@ -71,6 +97,8 @@ def sanitize_url(url, givenUrl):
     """
 
     # @todo extend this to https and make it more error tolerant
+    # absolute urls, starting with / should be handled too
+
     urlParts = urlsplit(url)
     if 'http' in url:
         sanitizedUrl = 'http://' + urlParts.netloc + urlParts.path
@@ -106,10 +134,21 @@ def add_bookmark(rdb_client, url):
     bookmark_id = location[location.rfind('/')+1:]
 
     # print status
-    # @todo make this print in color codes ? and a better error message
-    print '--------->', add_response['status']
+    get_status_message(add_response['status'])
 
     return bookmark_id
+
+
+def get_status_message(code):
+    """
+    Turns a status code into a colored message (tbd)
+    """
+
+    # @todo make this print better error messages
+    if int(code) not in [202, 409]:
+        print colored(code, 'red')
+    else:
+        print colored(code, 'green')
 
 
 def add_tag(rdb_client, bookmark_id, tag):
@@ -120,7 +159,18 @@ def add_tag(rdb_client, bookmark_id, tag):
     add_tags = rdb_client.add_tags_to_bookmark(bookmark_id, tag)
 
 
-def send_to_readability(list, tag):
+def class_or_id(param):
+    """
+    Ideally this will differentiate between classes and ids,
+    maybe in the way jQuery does (#id, .class)
+    """
+
+    # @todo differentiate between IDs and classes
+    if param[0] == ".":
+        return param[1:]
+
+
+def send_to_readability(url_list, tag):
     """
     This function actually puts it together to send data to Readability
     """
@@ -129,9 +179,9 @@ def send_to_readability(list, tag):
     rdb_client = create_client(token)
 
     print 'Starting import process...'
-    print 'Adding', len(list), 'pages...'
+    print 'Adding', len(url_list), 'pages...'
 
-    for url in list:
+    for url in url_list:
         print '- Adding bookmark for:', url
         bookmark_id = add_bookmark(rdb_client, url)
         add_tag(rdb_client, bookmark_id, tag)
@@ -139,14 +189,49 @@ def send_to_readability(list, tag):
     print 'Done.'
 
 
+def get_options():
+    """
+    Define and retrieve options from the command line
+    """
 
-#list = ['https://nose.readthedocs.org/en/latest/writing_tests.html#test-functions', 'http://learnpythonthehardway.org/book/ex40.html']
+    parser = optparse.OptionParser()
+    parser.add_option('-u', help='URL with table of contents to parse (required)', dest='url', action='store_true')
+    parser.add_option('-c', help='CSS Class or ID to parse, eg. main-content (required)', dest='css_class', action='store_true')
+    parser.add_option('-t', help='Tag name in Readability. Defaults to <title> of site given in option -u if empty.', dest='tag', action='store_true')
+    (opts, args) = parser.parse_args()
 
-new_list = get_toc('http://openbook.galileocomputing.de/java7/')
+    # Making sure all mandatory options are set:
+    mandatories = ['url', 'css_class']
+    for m in mandatories:
+        if not opts.__dict__[m]:
+            print "Mandatory options is missing!\n"
+            parser.print_help()
+            exit(-1)
 
-# debug:
-list = new_list[11:13]
-
-send_to_readability(list, 'Book')
+    return (opts, args)
 
 
+def main():
+    """
+    main function that starts everything else
+    """
+
+    # get options:
+    (opts, args) = get_options()
+    url = str(args[0]) if opts.url else ""
+    css_class = str(args[1]) if opts.css_class else ""
+    tag = str(args[2]) if opts.tag else ""
+
+    # then start doing stuff:
+    soup = get_soup(url)
+    url_list = get_links(soup, url, class_or_id(css_class))
+    tag_name = get_tag_name(soup, tag)
+
+    # debug:
+    #url_list = url_list[:10]
+
+    send_to_readability(url_list, tag_name)
+
+
+if __name__ == "__main__":
+    main()

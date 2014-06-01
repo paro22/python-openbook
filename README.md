@@ -9,6 +9,8 @@ This little python script does just that. Put in a URL to parse, define a CSS cl
 
 ## Usage
 
+Make sure to copy the settings_template.py to create settings.py with your own credentials.
+
 ```
 python openbook/main.py -u http://openbook.galileocomputing.de/java7/ -c .main
 ```
@@ -25,5 +27,4 @@ Please note that this is my first ever Python program, so there is probably some
 
 * instead of using Readability for parsing and storing, write own (simple) parser
 * write some tests
-* make it oop
-* check if best practices are used
+* check if best practices are used, python style guide

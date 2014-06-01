@@ -15,9 +15,11 @@ Make sure to copy the settings_template.py to create settings.py with your own c
 python openbook/main.py -u http://openbook.galileocomputing.de/java7/ -c .main
 ```
 
-* u - URL with table of contents to parse (required)
-* c - CSS Class or ID to parse, eg. main-content (required)
-* t - Tag name in Readability. Defaults to <title> of site given in option -u if empty.
+|Option|Description|
+|---|-----------------------------------------------------------------------------------|
+| u | URL with table of contents to parse (required)                                    | 
+| c | CSS Class or ID to parse, eg. main-content (required)                             |
+| t | Tag name in Readability. Defaults to <title> of site if empty.                    |
 
 ## Disclaimer
 
@@ -26,5 +28,4 @@ Please note that this is my first ever Python program, so there is probably some
 ## To Do's
 
 * instead of using Readability for parsing and storing, write own (simple) parser
-* write some tests
 * check if best practices are used, python style guide

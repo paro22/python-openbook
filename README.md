@@ -13,10 +13,9 @@ This little python script does just that. Put in a URL to parse, define a CSS cl
 python openbook/main.py -u http://openbook.galileocomputing.de/java7/ -c .main
 ```
 
--h, --help  | show this help message and exit
--u          | URL with table of contents to parse (required)
--c          | CSS Class or ID to parse, eg. main-content (required)
--t          | Tag name in Readability. Defaults to <title> of site given in option -u if empty.
+* u - URL with table of contents to parse (required)
+* c - CSS Class or ID to parse, eg. main-content (required)
+* t - Tag name in Readability. Defaults to <title> of site given in option -u if empty.
 
 ## Disclaimer
 

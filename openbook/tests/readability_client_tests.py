@@ -11,9 +11,9 @@ class TestReadabilityClient(unittest.TestCase):
         self.client = readability_client.ReadabilityClient(url_list, tag_name)
 
     def test_get_token(self):
-        # @todo better way to test this?
+        # TODO better way to test this?
         self.assertTrue(len(self.client.token) == 2)
 
     def test_create_client(self):
-        # @todo improve this
+        # TODO improve this
         self.assertTrue(self.client.rdb_client)

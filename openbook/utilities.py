@@ -13,17 +13,18 @@ def remove_duplicate_urls(seq, idfun=None):
     """
 
     if idfun is None:
-        def idfun(x): return x
+        def idfun(x):
+            return x
     seen = {}
     result = []
     for item in seq:
         marker = idfun(item)
-        if marker in seen: continue
+        if marker in seen:
+            continue
         seen[marker] = 1
         result.append(item)
 
     return result
-
 
 
 def class_or_id(selector):
@@ -32,6 +33,6 @@ def class_or_id(selector):
     maybe in the way jQuery does (#id, .class)
     """
 
-    # @todo differentiate between IDs and classes
+    # TODO differentiate between IDs and classes
     if selector[0] == ".":
         return selector[1:]

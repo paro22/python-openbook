@@ -58,7 +58,7 @@ class BookParser(object):
         SplitResult(scheme='http', netloc='', path=u'abc.html', query='', fragment=u'')
         """
 
-        # @todo extend this to https and make it more error tolerant
+        # TODO extend this to https and make it more error tolerant
         # absolute urls, starting with / should be handled too
 
         current_url_parts = urlsplit(current_url)

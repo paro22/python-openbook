@@ -28,4 +28,3 @@ Please note that this is my first ever Python program, so there is probably some
 ## To Do's
 
 * instead of using Readability for parsing and storing, write own (simple) parser
-* check if best practices are used, python style guide

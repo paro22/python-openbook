@@ -54,7 +54,7 @@ class ReadabilityClient():
         """
 
         code = response['status']
-        # @todo make this print better error messages
+        # TODO make this print better error messages
         if int(code) not in [202, 409]:
             return colored(code, 'red')
         else:

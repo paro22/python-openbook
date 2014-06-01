@@ -40,7 +40,7 @@ def get_options():
 
 def main():
     """
-    main function that starts everything else
+    Main function that starts everything else
     """
 
     # get options:
@@ -49,19 +49,19 @@ def main():
     css_class = str(args[1]) if opts.css_class else ""
     tag = str(args[2]) if opts.tag else ""
 
-    # Parser:
+    # start parser:
     bp = book_parser.BookParser(url, css_class, tag)
     url_list = bp.get_links()
     tag_name = bp.get_tag_name()
 
-    # DEBUG:
+    # DEBUG (only send part of the links):
     #url_list = url_list[20:21]
     #print url_list
 
-    # Readability:
+    # send stuff to Readability:
     rc = readability_client.ReadabilityClient(url_list, tag_name)
     rc.send_to_readability()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

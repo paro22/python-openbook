@@ -9,6 +9,15 @@ class TestUtilities(unittest.TestCase):
         self.assertEqual(list_without_duplicates, ["a", "b", "c", "d"])
 
     def test_class_or_id(self):
+
+        # Class
         selector = ".test_class"
         selector_parsed = utilities.class_or_id(selector)
-        self.assertEqual(selector_parsed, 'test_class')
+        self.assertEqual(selector_parsed[0], 'class')
+        self.assertEqual(selector_parsed[1], 'test_class')
+
+        # ID:
+        selector = "#test_id"
+        selector_parsed = utilities.class_or_id(selector)
+        self.assertEqual(selector_parsed[0], 'id')
+        self.assertEqual(selector_parsed[1], 'test_id')

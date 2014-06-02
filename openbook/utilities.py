@@ -5,20 +5,20 @@ Static helper functions
 """
 
 
-def remove_duplicate_urls(seq, idfun=None):
+def remove_duplicate_urls(seq, id_fun=None):
     """
-    Remove unnessary duplicates from the list of URLs
+    Remove unnecessary duplicates from the list of URLs
 
     The function is borrowed from the nice gentlemen at http://www.peterbe.com/plog/uniqifiers-benchmark
     """
 
-    if idfun is None:
-        def idfun(x):
+    if id_fun is None:
+        def id_fun(x):
             return x
     seen = {}
     result = []
     for item in seq:
-        marker = idfun(item)
+        marker = id_fun(item)
         if marker in seen:
             continue
         seen[marker] = 1
@@ -29,10 +29,14 @@ def remove_duplicate_urls(seq, idfun=None):
 
 def class_or_id(selector):
     """
-    Ideally this will differentiate between classes and ids,
-    maybe in the way jQuery does (#id, .class)
+    Differentiate between classes and ids in the way jQuery does (#id, .class)
     """
 
-    # TODO differentiate between IDs and classes
-    if selector[0] == ".":
-        return selector[1:]
+    if selector[0] == '.':
+        soup_selector = 'class'
+    elif selector[0] == '#':
+        soup_selector = 'id'
+    else:
+        soup_selector = ''
+
+    return [soup_selector, selector[1:]]

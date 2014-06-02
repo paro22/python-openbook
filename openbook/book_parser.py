@@ -12,9 +12,9 @@ import utilities
 
 class BookParser(object):
 
-    def __init__(self, url, css_class, tag_name):
+    def __init__(self, url, selector, tag_name):
         self.url = url
-        self.css_class = utilities.class_or_id(css_class)
+        self.selector = utilities.class_or_id(selector)
         self.tag_name = tag_name
         self.soup = self.get_soup()
 
@@ -34,7 +34,16 @@ class BookParser(object):
         """
 
         url_list = []
-        divs = self.soup.find_all(class_=self.css_class, limit=1)
+
+        # choose selector
+        if self.selector[0] == 'id':
+            divs = self.soup.find_all(id=self.selector[1])
+        elif self.selector[0] == 'class':
+            divs = self.soup.find_all(class_=self.selector[1], limit=1)
+        else:
+            divs = self.soup.find_all('body', limit=1)
+
+        # then retrieve all links:
         for div in divs:
             for link in div.find_all('a'):
                 href = str(link.get('href'))
@@ -44,7 +53,7 @@ class BookParser(object):
                     href = self.sanitize_url(link.get('href'))
                     url_list.append(href)
 
-        print 'Found %s links (Selector: %s).' % (len(url_list), self.css_class)
+        print 'Found %s links (Selector: %s).' % (len(url_list), self.selector)
 
         without_duplicates = utilities.remove_duplicate_urls(url_list)
         print 'Removing duplicates, the list was reduced to %s links.' % len(without_duplicates)

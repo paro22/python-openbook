@@ -12,13 +12,13 @@ This little python script does just that. Put in a URL to parse, define a CSS cl
 Make sure to copy the settings_template.py to create settings.py with your own credentials.
 
 ```
-python openbook/main.py -u http://openbook.galileocomputing.de/java7/ -c .main
+python openbook/main.py -u http://openbook.galileocomputing.de/java7/ -c '.main' -t 'Java 7'
 ```
 
 |Option|Description|
 |---|-----------------------------------------------------------------------------------|
 | u | URL with table of contents to parse (required)                                    | 
-| c | CSS Class or ID to parse, eg. main-content (required)                             |
+| c | CSS Class or ID to parse, eg. '.main-content' (required)                          |
 | t | Tag name in Readability. Defaults to <title> of site if empty.                    |
 
 ## Disclaimer

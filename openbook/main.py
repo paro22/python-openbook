@@ -55,8 +55,9 @@ def main():
     tag_name = bp.get_tag_name()
 
     # DEBUG (only send part of the links):
-    #url_list = url_list[20:21]
-    #print url_list
+    #url_list = url_list[21:25]
+    #print 'len url_list', len(url_list)
+    #print 'url_list', url_list
 
     # send stuff to Readability:
     rc = readability_client.ReadabilityClient(url_list, tag_name)

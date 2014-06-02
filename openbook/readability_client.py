@@ -55,10 +55,12 @@ class ReadabilityClient():
 
         code = response['status']
         # TODO make this print better error messages
-        if int(code) not in [202, 409]:
-            return colored(code, 'red')
-        else:
+        if int(code) in [202]:
             return colored(code, 'green')
+        elif int(code) in [409]:
+            return colored(code, 'yellow')
+        else:
+            return colored(code, 'red')
 
     def add_tag(self, bookmark_id, tag):
         """
@@ -82,7 +84,7 @@ class ReadabilityClient():
             location = add_response['location']
             bookmark_id = location[location.rfind('/')+1:]
 
-            print '- Adding bookmark for %s. Status: %s' % (url, self.get_status_message(add_response))
+            print '- Adding bookmark for %s -> %s' % (url, self.get_status_message(add_response))
 
             # then add tag:
             self.add_tag(bookmark_id, self.tag)

@@ -1,6 +1,6 @@
 # Readability Book Parser
 
-Proof of concept for a online book parser that sends articles to Readability.com
+Proof of concept for an online book parser that sends articles to Readability.com
 
 ## Idea
 
